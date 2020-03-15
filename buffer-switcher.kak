@@ -21,6 +21,8 @@ define-command buffer-switcher %{
                 exec '<a-k><ret>'
                 # also highlight it in green
                 addhl buffer/ regex "%reg{/}" 0:BufferSwitcherCurrent
+            } catch %{
+                exec gg
             }
             map buffer normal <ret> ': buffer-switcher-switch<ret>'
             map buffer normal <esc> ': delete-buffer %opt{buffer_switcher_name}<ret>'
