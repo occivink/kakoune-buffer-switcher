@@ -1,17 +1,16 @@
 # we assume that a buffer name will never contain newlines (not exactly true, but who cares)
 
 face global BufferSwitcherCurrent black,green
-declare-option str buffer_switcher_name *buffer-switcher*
 
 define-command buffer-switcher %{
     try %{
-        b %opt{buffer_switcher_name}
+        b *buffer-switcher*
     } catch %{
         eval -save-regs '"/' %{
             reg / "^\Q%val{bufname}\E$"
-            eval reg dquote %val{buflist}
+            reg dquote %val{buflist}
 
-            edit -scratch %opt{buffer_switcher_name}
+            edit -scratch *buffer-switcher*
             exec '<a-P>)<a-space>i<ret><esc>'
             exec '%<a-s>'
             # remove *debug* buffer
@@ -25,8 +24,8 @@ define-command buffer-switcher %{
                 exec gg
             }
             map buffer normal <ret> ': buffer-switcher-switch<ret>'
-            map buffer normal <esc> ': delete-buffer %opt{buffer_switcher_name}<ret>'
-            hook global -once WinDisplay .* %{ try %{ delete-buffer %opt{buffer_switcher_name} } }
+            map buffer normal <esc> ': delete-buffer *buffer-switcher*<ret>'
+            hook global WinDisplay -once .* %{ try %{ delete-buffer *buffer-switcher* } }
         }
     }
 }
@@ -37,7 +36,7 @@ define-command -hidden buffer-switcher-switch %{
     exec '<space>;<a-x>H'
     eval -save-regs b %{
         reg b %val{selection}
-        delete-buffer %opt{buffer_switcher_name}
+        delete-buffer *buffer-switcher*
         buffer %reg{b}
     }
 }
@@ -46,14 +45,14 @@ define-command -hidden buffer-switcher-switch %{
 define-command -hidden buffer-switcher-delete-buffers %{
     # print buflist, and all lines
     # everything that appears only once gets removed
-    eval -buffer %opt{buffer_switcher_name} %{
+    eval -buffer *buffer-switcher* %{
         exec '%<a-s>H'
         eval %sh{
             {
             eval set -- "$kak_quoted_buflist"
             for buf do
                 # ignore self and debug
-                if [ "$buf" = "$kak_opt_buffer_switcher_name" ]; then
+                if [ "$buf" = '*buffer-switcher*' ]; then
                     :
                 elif [ "$buf" = '*debug*' ]; then
                     :
@@ -87,7 +86,7 @@ define-command -hidden buffer-switcher-delete-buffers %{
 
 # re-arrange the buflist according to the order in the *buffer-switcher*
 define-command -hidden buffer-switcher-sort-buffers %{
-    eval -buffer %opt{buffer_switcher_name} %{
+    eval -buffer *buffer-switcher* %{
         exec '%<a-s>H'
         arrange-buffers %val{selections}
     }
