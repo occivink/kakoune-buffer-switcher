@@ -1,12 +1,12 @@
 # kakoune-buffer-switcher
 
+**Warning**: For kakoune version 2021.11.08 and earlier, the master branch of this plugin will not work. The latest commit compatible with these versions is 216bf7e70a3944ddd684b278a43c1dd5759a5b85.
+
 [Kakoune](http://kakoune.org) plugin to navigate between open buffers, and manipulate the buffers-list.
 
 ## Setup
 
 Add `buffer-switcher.kak` to your `autoload` directory: `~/.config/kak/autoload/`, or source it manually.
-
-This plugin relies on kakoune >= 2020.09.01 and the `:arrange-buffers` command.
 
 ## Usage
 
